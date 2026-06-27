@@ -1,7 +1,7 @@
 # wigle-mcp
 
-A local MCP server exposing [WiGLE.net](https://wigle.net) wardriving lookups
-as tools for Claude.
+An [MCP](https://modelcontextprotocol.io) server that exposes
+[WiGLE.net](https://wigle.net) wardriving lookups as tools for LLMs.
 
 ## Tools
 
@@ -37,8 +37,48 @@ as tools for Claude.
 uv run wigle-mcp
 ```
 
-## Add to Claude Code
+## Configuration
+
+### Claude Code
 
 ```bash
-claude mcp add wigle -- uv --directory D:/wigle-mcp run wigle-mcp
+claude mcp add wigle -- uv --directory /path/to/wigle-mcp run wigle-mcp
+```
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "wigle": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/wigle-mcp", "run", "wigle-mcp"],
+      "env": {
+        "WIGLE_API_NAME": "your-api-name",
+        "WIGLE_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Add to your `.cursor/mcp.json` (project-level) or `~/.cursor/mcp.json` (global):
+
+```json
+{
+  "mcpServers": {
+    "wigle": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/wigle-mcp", "run", "wigle-mcp"],
+      "env": {
+        "WIGLE_API_NAME": "your-api-name",
+        "WIGLE_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
 ```

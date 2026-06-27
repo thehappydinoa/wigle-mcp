@@ -2,11 +2,18 @@
 name = "wigle-mcp"
 version = "0.1.0"
 description = "MCP server for the WiGLE.net wardriving API"
+readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11"
+authors = [{ name = "Aidan Holland" }]
+keywords = ["mcp", "wigle", "wardriving", "wifi", "geolocation"]
 dependencies = [
     "fastmcp>=2.0",
     "httpx>=0.27",
 ]
+
+[project.urls]
+Repository = "https://github.com/thehappydinoa/wigle-mcp"
 
 [project.scripts]
 wigle-mcp = "wigle_mcp.server:main"
