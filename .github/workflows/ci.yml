@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "**.py"
       - "pyproject.toml"
@@ -10,7 +10,7 @@ on:
       - ".python-version"
       - ".github/workflows/ci.yml"
   pull_request:
-    branches: [master]
+    branches: [main]
     paths:
       - "**.py"
       - "pyproject.toml"

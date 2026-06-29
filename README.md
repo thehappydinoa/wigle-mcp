@@ -1,5 +1,7 @@
 # wigle-mcp
 
+[![CI](https://github.com/thehappydinoa/wigle-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/thehappydinoa/wigle-mcp/actions/workflows/ci.yml)
+
 An [MCP](https://modelcontextprotocol.io) server that exposes
 [WiGLE.net](https://wigle.net) wardriving lookups as tools for LLMs.
 
