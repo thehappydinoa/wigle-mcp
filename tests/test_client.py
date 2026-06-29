@@ -39,6 +39,12 @@ def test_load_credentials_missing_raises(monkeypatch, tmp_path):
         _load_credentials()
 
 
+def test_user_agent_uses_package_version():
+    from wigle_mcp import __version__
+
+    assert wigle_client.USER_AGENT == f"wigle-mcp/{__version__}"
+
+
 def test_config_path_uses_xdg_config_home(monkeypatch, tmp_path):
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
 
@@ -123,9 +129,7 @@ async def test_detail_endpoints(method, path):
 
 @respx.mock
 async def test_get_raises_on_http_error():
-    respx.get(f"{wigle_client.WIGLE_BASE}/network/detail").mock(
-        return_value=httpx.Response(500, text="boom")
-    )
+    respx.get(f"{wigle_client.WIGLE_BASE}/network/detail").mock(return_value=httpx.Response(500, text="boom"))
 
     client = WigleClient()
     with pytest.raises(httpx.HTTPStatusError):

@@ -17,8 +17,10 @@ from typing import Any
 
 import httpx
 
+from wigle_mcp import __version__
+
 WIGLE_BASE = "https://api.wigle.net/api/v2"
-USER_AGENT = "wigle-mcp/0.1"
+USER_AGENT = f"wigle-mcp/{__version__}"
 
 # Shared connection pool: reused across tool calls so repeated lookups avoid
 # re-doing DNS/TLS handshakes.
@@ -64,7 +66,7 @@ def _load_credentials() -> tuple[str, str]:
         raise WigleAuthError(
             "No WiGLE API credentials found. Set WIGLE_API_NAME and "
             "WIGLE_API_TOKEN env vars, or create "
-            f"{path} with {{\"api_name\": ..., \"api_token\": ...}}. "
+            f'{path} with {{"api_name": ..., "api_token": ...}}. '
             "Get a free API key at https://wigle.net/account"
         )
     return name, token
@@ -85,9 +87,7 @@ class WigleClient:
     async def _get(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
         params = {k: v for k, v in params.items() if v is not None}
         client = _get_http_client()
-        resp = await client.get(
-            f"{WIGLE_BASE}/{path}", params=params, headers=self._headers
-        )
+        resp = await client.get(f"{WIGLE_BASE}/{path}", params=params, headers=self._headers)
         resp.raise_for_status()
         return resp.json()
 
