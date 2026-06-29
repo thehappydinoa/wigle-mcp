@@ -45,6 +45,10 @@ def test_require_search_filter_accepts_only_open():
     require_search_filter("network_search", only_open=True)
 
 
+def test_require_search_filter_accepts_search_after():
+    require_search_filter("network_search", search_after="3522985")
+
+
 def test_validate_bounding_box_requires_all_corners():
     with pytest.raises(ToolError, match="requires all four parameters"):
         validate_bounding_box(1.0, None, None, None)

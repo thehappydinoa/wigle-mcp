@@ -23,10 +23,18 @@ WiGLE exposes wardriving data with strict per-account daily query limits \
 Query etiquette:
 - Prefer one bounded *_search over many *_detail calls.
 - Always pass at least one search filter; unfiltered searches waste quota.
-- Use search_after from a previous response to paginate instead of repeating queries.
+- To fetch more results, STRONGLY prefer passing search_after from the prior \
+response's searchAfter field. search_after alone is valid for pagination and \
+avoids repeating filters or re-running the same query from scratch.
 - Keep results_per_page low unless the user explicitly needs more.
 - *_detail omits sighting locations by default; pass include_locations=true only when needed.
 """
+
+SEARCH_AFTER_FIELD = (
+    "Pagination cursor from a previous response's searchAfter field. "
+    "STRONGLY PREFERRED for additional pages: pass this alone to continue the "
+    "same query without repeating filters."
+)
 
 READ_ONLY = {
     "readOnlyHint": True,
@@ -139,12 +147,12 @@ async def network_search(
     only_open: Annotated[bool | None, Field(description="If true, only return networks with no encryption")] = None,
     encryption: Annotated[str | None, Field(description="Encryption filter, e.g. 'wpa', 'wpa2', 'wep', 'none'")] = None,
     results_per_page: Annotated[int, Field(description="Max results to return (1-100)", ge=1, le=100)] = 25,
-    search_after: Annotated[
-        str | None,
-        Field(description="Pagination cursor from a previous response's 'search_after' field"),
-    ] = None,
+    search_after: Annotated[str | None, Field(description=SEARCH_AFTER_FIELD)] = None,
 ) -> dict[str, Any]:
-    """Search WiGLE's database of observed WiFi networks by SSID, BSSID, location, or encryption."""
+    """Search WiGLE's database of observed WiFi networks by SSID, BSSID, location, or encryption.
+
+    For additional pages, pass search_after from the prior response's searchAfter field.
+    """
     validate_bounding_box(lat_min, lat_max, long_min, long_max)
     require_search_filter(
         "network_search",
@@ -157,6 +165,7 @@ async def network_search(
         city=city,
         only_open=only_open,
         encryption=encryption,
+        search_after=search_after,
     )
     return await _search(
         "wifi",
@@ -213,12 +222,12 @@ async def bluetooth_search(
     long_min: Annotated[float | None, Field(description="Minimum longitude of bounding box")] = None,
     long_max: Annotated[float | None, Field(description="Maximum longitude of bounding box")] = None,
     results_per_page: Annotated[int, Field(description="Max results to return (1-100)", ge=1, le=100)] = 25,
-    search_after: Annotated[
-        str | None,
-        Field(description="Pagination cursor from a previous response's 'search_after' field"),
-    ] = None,
+    search_after: Annotated[str | None, Field(description=SEARCH_AFTER_FIELD)] = None,
 ) -> dict[str, Any]:
-    """Search WiGLE's database of observed Bluetooth/BLE devices by name, MAC, or location."""
+    """Search WiGLE's database of observed Bluetooth/BLE devices by name, MAC, or location.
+
+    For additional pages, pass search_after from the prior response's searchAfter field.
+    """
     validate_bounding_box(lat_min, lat_max, long_min, long_max)
     require_search_filter(
         "bluetooth_search",
@@ -226,6 +235,7 @@ async def bluetooth_search(
         name_like=name_like,
         bssid=bssid,
         lat_min=lat_min,
+        search_after=search_after,
     )
     return await _search(
         "bluetooth",
@@ -268,12 +278,12 @@ async def cell_search(
     long_min: Annotated[float | None, Field(description="Minimum longitude of bounding box")] = None,
     long_max: Annotated[float | None, Field(description="Maximum longitude of bounding box")] = None,
     results_per_page: Annotated[int, Field(description="Max results to return (1-100)", ge=1, le=100)] = 25,
-    search_after: Annotated[
-        str | None,
-        Field(description="Pagination cursor from a previous response's 'search_after' field"),
-    ] = None,
+    search_after: Annotated[str | None, Field(description=SEARCH_AFTER_FIELD)] = None,
 ) -> dict[str, Any]:
-    """Search WiGLE's database of observed cell towers by ID, operator, network type, or location."""
+    """Search WiGLE's database of observed cell towers by ID, operator, network type, or location.
+
+    For additional pages, pass search_after from the prior response's searchAfter field.
+    """
     validate_bounding_box(lat_min, lat_max, long_min, long_max)
     require_search_filter(
         "cell_search",
@@ -281,6 +291,7 @@ async def cell_search(
         operator=operator,
         network_type=network_type,
         lat_min=lat_min,
+        search_after=search_after,
     )
     return await _search(
         "cell",

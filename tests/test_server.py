@@ -222,6 +222,19 @@ async def test_network_search_validates_bounding_box():
 
 
 @respx.mock
+async def test_network_search_accepts_search_after_for_pagination():
+    route = respx.get(f"{wigle_client.WIGLE_BASE}/network/search").mock(
+        return_value=httpx.Response(200, json={"success": True, "results": []})
+    )
+
+    await network_search(search_after="3522985")
+
+    request = route.calls.last.request
+    assert request.url.params["searchAfter"] == "3522985"
+    assert "ssid" not in request.url.params
+
+
+@respx.mock
 async def test_network_search_maps_parameters():
     route = respx.get(f"{wigle_client.WIGLE_BASE}/network/search").mock(
         return_value=httpx.Response(200, json={"success": True, "results": []})

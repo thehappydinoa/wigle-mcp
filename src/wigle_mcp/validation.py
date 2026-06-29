@@ -6,11 +6,12 @@ from fastmcp.exceptions import ToolError
 
 
 def require_search_filter(tool_name: str, **filters: object) -> None:
-    """Require at least one meaningful search filter before calling the API."""
+    """Require at least one meaningful search filter or a pagination cursor."""
     if not any(v is not None and v != "" for v in filters.values()):
         raise ToolError(
             f"{tool_name} requires at least one search filter "
-            "(e.g. ssid, bssid, bounding box, or geo fields). "
+            "(e.g. ssid, bssid, bounding box, or geo fields), "
+            "or search_after from a previous response to paginate. "
             "Unfiltered searches waste your daily WiGLE query quota."
         )
 
