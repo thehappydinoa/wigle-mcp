@@ -42,8 +42,12 @@ uv run wigle-mcp
 ### Claude Code
 
 ```bash
-claude mcp add wigle -- uv --directory /path/to/wigle-mcp run wigle-mcp
+claude mcp add wigle -- uv --directory /path/to/wigle-mcp run --no-sync wigle-mcp
 ```
+
+On Windows, include `--no-sync` so `uv run` does not try to reinstall the
+project while another MCP client (for example Cursor) already has
+`wigle-mcp.exe` open.
 
 ### Claude Desktop
 
